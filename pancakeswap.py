@@ -7,7 +7,7 @@ import time
 from typing import Optional, Dict, List
 from decimal import Decimal
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
+from web3.middleware.geth_poa import geth_poa_middleware
 from eth_account import Account
 from config import get_settings
 
