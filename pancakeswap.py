@@ -7,8 +7,13 @@ import time
 from typing import Optional, Dict, List
 from decimal import Decimal
 from web3 import Web3
-from web3.middleware.geth_poa import geth_poa_middleware
 from eth_account import Account
+
+# Web3.py v7 compatibility - middleware is optional
+try:
+    from web3.middleware.geth_poa import geth_poa_middleware
+except ImportError:
+    geth_poa_middleware = None
 from config import get_settings
 
 settings = get_settings()
@@ -87,7 +92,8 @@ class PancakeSwapTrader:
     def __init__(self):
         self.settings = get_settings()
         self.w3 = Web3(Web3.HTTPProvider(self.settings.active_rpc_url))
-        self.w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+        if geth_poa_middleware:
+            self.w3.middleware_onion.inject(geth_poa_middleware, layer=0)
         
         self.router = self.w3.eth.contract(
             address=Web3.to_checksum_address(self.settings.PANCAKE_ROUTER_ADDRESS),
